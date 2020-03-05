@@ -16,4 +16,15 @@ spring:
     username: root
     password: mima
 
+# Eureka 配置，服务注册地址
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:7001/eureka/
+  instance:
+    instance-id: springcloud-provider-dept8001 # 修改Eureka上的默认，描述信息
 
+# info 配置
+info:
+  app.name: Paulson-springcloud
+  company.name: ybs
