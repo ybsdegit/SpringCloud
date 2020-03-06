@@ -9,8 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>springcloud-provider-dept-8001</artifactId>
-
+    <artifactId>springcloud-provider-dept-8002</artifactId>
     <dependencies>
         <!--实体类-->
         <dependency>
@@ -69,6 +68,5 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
     </dependencies>
-
 
 </project>
