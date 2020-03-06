@@ -1,5 +1,5 @@
 server:
-  port: 7001
+  port: 7002
 eureka:
   instance:
     hostname: localhost  # Eureka 服务端的实例名车
@@ -9,5 +9,4 @@ eureka:
     service-url:
       # 单机 监控页面  http://${eureka.instance.hostname}:${server.port}/eureka/
       # 集群（关联）
-      defaultZone: http://localhost:7002/eureka/,http://localhost:7003/eureka/
-
+      defaultZone: http://localhost:7001/eureka/,http://localhost:7003/eureka/
