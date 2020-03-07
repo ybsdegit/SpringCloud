@@ -11,9 +11,20 @@
 - 服务熔断，服务降级
 
 
-- eureka 与 zookeeper 区别
+## eureka 与 zookeeper 区别
 
+- CAP 原则
+    - C 强一致性
+    - A 可用性
+    - P 分区容错性
 
+- ACID
+    - 原子性，一致性，隔离性，持久性
+
+- **Zookeeper 保证的是CP**
+    - 失去master节点，引起故障
+- **Eureka 保证的是AP**
+    - 很好的应对因网络故障导致部分节点失去联系的情况，而不会想 zookeeper 那样使整个服务崩掉
 - 使用RestTemplate 进行服务之间调用
 ```java
 @RestController
@@ -111,6 +122,8 @@ info:
     @EnableEurekaClient  // 在服务启动后自动注册到eureka中
 
 
+
+
 ## Ribbon 负载均衡
 进程内LB
 LoadBalance （LB，负载均衡）将用户的请求平摊的分配到多个服务上
@@ -144,7 +157,6 @@ public class ConfigBean {
 
 }
 ```
-
 
 ## Feign 负载均衡
 
@@ -182,3 +194,47 @@ public interface DeptClientService {
 
 @EnableFeignClients(basePackages = {"com.ybs.springcloud"})
 @ComponentScan("com.ybs.springcloud")
+
+
+## 服务熔断 Hystrix （断路器）服务端
+
+- 服务雪崩
+    对于高流量的应用，单一的后端依赖坑你导致所有服务在几秒内饱和
+    我们需要 弃车保帅
+
+- Hystrix
+   避免级联故障，提高分布式系统的弹性
+   备选响应
+
+- 服务熔断
+   熔断机制是应对雪崩效应的一种微服务链路保护机制
+
+   当链路某个微服务不可用获取响应时间太长时，会进行服务的降级，进而熔断该节点微服务的调用，快速返回错误的响应信息
+
+## 服务降级 Hystrix （客户端）
+- 服务熔断
+    - 服务端
+    - 某个服务超时或者异常，引起熔断
+- 服务降级
+    - 客户端
+    - 从整体网站请求负载考虑 当某个服务熔断或者关闭之后，服务将不被调用
+    - 此时客户端可以准备一个 FallbackFactory， 返回一个默认的值（缺省值）
+    - 整体服服务水平下降了。好歹能用，比直接挂掉强
+
+
+```
+
+@SpringBootApplication
+@EnableEurekaClient  // 在服务启动后自动注册到eureka中
+@EnableDiscoveryClient  // 服务发现
+@EnableCircuitBreaker   // 添加对熔断的支持 断路器
+```
+
+```java
+@Bean
+    public ServletRegistrationBean hystrixMetricsStreamServlet(){
+        ServletRegistrationBean registrationBean = new ServletRegistrationBean(new HystrixMetricsStreamServlet());
+        registrationBean.addUrlMappings("/actuator/hystrix.stream");
+        return registrationBean;
+    }
+```
