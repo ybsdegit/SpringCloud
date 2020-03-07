@@ -1,6 +1,7 @@
 package com.ybs.springcloud.service;
 
 import com.ybs.springcloud.pojo.Dept;
+import com.ybs.springcloud.service.Impl.DeptClientFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +18,7 @@ import java.util.List;
  */
 
 @Component
-@FeignClient(value = "SPRINGCLOUD-PROVIDER-DEPT")
+@FeignClient(value = "SPRINGCLOUD-PROVIDER-DEPT", fallbackFactory = DeptClientFallbackFactory.class)
 public interface DeptClientService {
 
     @GetMapping("/dept/get/{id}")
