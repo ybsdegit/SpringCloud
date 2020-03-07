@@ -111,4 +111,74 @@ info:
     @EnableEurekaClient  // 在服务启动后自动注册到eureka中
 
 
+## Ribbon 负载均衡
+进程内LB
+LoadBalance （LB，负载均衡）将用户的请求平摊的分配到多个服务上
+- 常见的负载均衡：Ngix, Lvs
+- 轮询
+- 随机
 
+1、导包
+```
+<!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-ribbon -->
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-ribbon</artifactId>
+    <version>1.4.7.RELEASE</version>
+</dependency>
+
+```
+
+2、配置类
+```java
+@Configuration
+public class ConfigBean {
+
+    // 配置负载均衡实现 RestTemplate
+    @Bean
+    @LoadBalanced  // Ribbon
+    public RestTemplate getRestTemplate(){
+        return new RestTemplate();
+    }
+
+
+}
+```
+
+
+## Feign 负载均衡
+
+使用Feign 可以代替 restTemplate
+
+1、导包
+```
+  <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-feign</artifactId>
+            <version>1.4.7.RELEASE</version>
+        </dependency>
+```
+
+2、service
+```java
+@Component
+@FeignClient(value = "SPRINGCLOUD-PROVIDER-DEPT")
+public interface DeptClientService {
+
+    @GetMapping("/dept/get/{id}")
+    public Dept queryById(@PathVariable("id") Long id);
+
+    @GetMapping("/dept/list")
+    public List<Dept> queryAll();
+
+    @PostMapping("/dept/add")
+    public boolean addDept(Dept dept);
+
+}
+
+```
+
+@Autowiredprivate DeptClientService deptClientService;
+
+@EnableFeignClients(basePackages = {"com.ybs.springcloud"})
+@ComponentScan("com.ybs.springcloud")
