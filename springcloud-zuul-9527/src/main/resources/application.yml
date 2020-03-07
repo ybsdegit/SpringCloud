@@ -24,3 +24,6 @@ zuul:
   routes:
     mydept.serviceId: springcloud-provider-dept
     mydept.path: /mydept/**
+  ignored-services: springcloud-provider-dept  # 不能再使用这个路径访问了
+  prefix: /ybs  # 公共的访问前缀
+#  ignored-services: *  # 隐藏全部
