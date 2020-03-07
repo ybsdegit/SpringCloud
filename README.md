@@ -238,3 +238,70 @@ public interface DeptClientService {
         return registrationBean;
     }
 ```
+
+## Zuul 网关
+- 实现外部访问统一入口
+- 过滤
+- Zuul 和 Eureka 整合
+
+zuul 配置
+```
+server:
+  port: 9527
+
+spring:
+  application:
+    name: springcloud-zuul
+
+
+
+# Eureka 配置，服务注册地址
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:7001/eureka/
+  instance:
+    instance-id: springcloud-zuul-9527 # 修改Eureka上的默认，描述信息
+    prefer-ip-address: true  # true 可以显示ip地址
+
+info:
+  app.name: paulson-springcloud
+  company.name: ybs
+
+zuul:
+  routes:
+    mydept.serviceId: springcloud-provider-dept
+    mydept.path: /mydept/**
+  ignored-services: springcloud-provider-dept  # 不能再使用这个路径访问了
+  prefix: /ybs  # 公共的访问前缀
+#  ignored-services: *  # 隐藏全部
+
+```
+
+## Spring Cloud Config
+
+
+```
+<dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-config-server</artifactId>
+        </dependency>
+```
+
+```
+server:
+  port: 3344
+
+spring:
+  application:
+    name: springcloud-config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://gitee.com/paulsonwier/springcloud-config.git
+
+# 通过config-server可以连接到git访问其中的资源和配置
+
+
+```
